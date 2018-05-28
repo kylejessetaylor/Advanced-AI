@@ -1,0 +1,12 @@
+﻿<Properties StartupItem="Advanced AI.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\-Advanced AI-\Shaders\TextureSplat.shader">
+    <Files>
+      <File FileName="Assets\-Advanced AI-\Shaders\TextureSplat.shader" Line="146" Column="32" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

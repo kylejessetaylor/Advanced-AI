@@ -14,10 +14,16 @@ public class Drawer : MonoBehaviour {
 	void Update () {
 		
 	}
+
     #region DrawingCollision
 
-    private float objWidth = 10f;
-    private float objHeight = 10f;
+    public Color paintColor;
+
+    private float objWidth = 7.5f;
+    private float objHeight = 15f;
+
+    //private float objWidth = 10;
+    //private float objHeight = 10;
 
     private void OnTriggerStay(Collider other)
     {
@@ -33,7 +39,7 @@ public class Drawer : MonoBehaviour {
 
             //Gets location of the pixel on terrain at this object's pivot &&& Paints a color around the location
             PaintAround(texture, PixelLocation(terrain, texture, objWidth, objHeight),
-                Color.red, new Vector2(transform.localScale.x, transform.localScale.z));
+                paintColor, new Vector2(transform.localScale.x, transform.localScale.z));
 
         }
     }
@@ -62,7 +68,7 @@ public class Drawer : MonoBehaviour {
         {
             for (int y = (int)pixelLocation.y - (int)heightRadius; y < (int)pixelLocation.y + (int)heightRadius; y++)
             {
-                tex.SetPixel(x, y, color);
+                tex.SetPixel(-y, x, color);
             }
         }
 
