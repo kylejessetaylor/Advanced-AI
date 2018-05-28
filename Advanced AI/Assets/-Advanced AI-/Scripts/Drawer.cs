@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ShaderForge;
 
 public class Drawer : MonoBehaviour {
 
@@ -26,7 +27,9 @@ public class Drawer : MonoBehaviour {
 
             //IDs the texture
             Renderer rend = terrain.GetComponent<Renderer>();
-            Texture2D texture = rend.material.mainTexture as Texture2D;
+            //Texture2D texture = rend.material.mainTexture as Texture2D;
+            Texture2D texture = Instantiate(rend.material.GetTexture("_DrawMap")) as Texture2D;
+            rend.material.SetTexture("_DrawMap", texture);
 
             //Gets location of the pixel on terrain at this object's pivot &&& Paints a color around the location
             PaintAround(texture, PixelLocation(terrain, texture, objWidth, objHeight),
@@ -54,7 +57,7 @@ public class Drawer : MonoBehaviour {
 
         //NOTE: change "x < (int)pixelLocation.x + (int)widthRadius" to follow spherical equation (x^2 + y^2 = objWidth/2 ^ 2) for circle texture splat
 
-        //Sets each individual pixel around the object to be a color
+        ////Sets each individual pixel around the object to be a color
         for (int x = (int)pixelLocation.x - (int)widthRadius; x < (int)pixelLocation.x + (int)widthRadius; x++)
         {
             for (int y = (int)pixelLocation.y - (int)heightRadius; y < (int)pixelLocation.y + (int)heightRadius; y++)
@@ -62,6 +65,18 @@ public class Drawer : MonoBehaviour {
                 tex.SetPixel(x, y, color);
             }
         }
+
+        //Draws Circle
+        //for (int x = (int)Mathf.Pow( (Mathf.Pow(widthRadius, 2f)) - (pixelLocation.x + Mathf.Pow(widthRadius, 2f)) , 0.5f);
+        //    x < (int)Mathf.Pow(Mathf.Pow(widthRadius, 2f) + (pixelLocation.x + Mathf.Pow(widthRadius, 2f)), 0.5f); x++)
+        //{
+        //    for (int y = (int)Mathf.Pow((Mathf.Pow(heightRadius, 2f)) - (pixelLocation.y + Mathf.Pow(heightRadius, 2f)), 0.5f);
+        //    y < (int)Mathf.Pow(Mathf.Pow(heightRadius, 2f) + (pixelLocation.y + Mathf.Pow(heightRadius, 2f)), 0.5f); y++)
+        //    {
+        //        tex.SetPixel(x, y, color);
+        //    }
+        //}
+
         tex.Apply();
     }
 

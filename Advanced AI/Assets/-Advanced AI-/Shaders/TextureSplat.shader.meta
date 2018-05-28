@@ -1,14 +1,13 @@
 fileFormatVersion: 2
 guid: 204498ce014131941b0809dc750a347a
-timeCreated: 1527407799
+timeCreated: 1527465749
 licenseType: Free
 ShaderImporter:
   externalObjects: {}
   defaultTextures:
   - _Corrupt: {fileID: 2800000, guid: 728e1b0f181f9894da497ec78273e91d, type: 3}
   - _Grass: {fileID: 2800000, guid: 7aa00ead85e5e464f96d62feffbb331e, type: 3}
-  - _DrawMap: {fileID: 2800000, guid: cd53bc766c96d654cafe2e861b0b4397, type: 3}
-  - _node_1045: {fileID: 2800000, guid: 2c1a38fc51f4162448c642f8fe2eec2c, type: 3}
+  - _DrawMap: {fileID: 2800000, guid: 03e4a25c6e1ccae4da67b2fcc1be6979, type: 3}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
