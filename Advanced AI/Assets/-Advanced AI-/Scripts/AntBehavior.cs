@@ -5,35 +5,33 @@ using UnityEngine;
 public class AntBehavior : MonoBehaviour {
 
     //Recieved from Spawner
-    [HideInInspector]
+    //[HideInInspector]
     public GameObject path;
-    [HideInInspector]
+    //[HideInInspector]
     public GameObject targetNode;
-    [HideInInspector]
+    //[HideInInspector]
     public int currentNode;
+
+    private GameObject oldPath;
 
     private List<GameObject> pathNodes = new List<GameObject>();
 
     public bool moveLeft;
     [Header("Movement")]
     private Rigidbody rb;
-    public float moveSpeed;
+    public float acceleration;
+    public float maxSpeed;
 
-	// Use this for initialization
-	void Start () {
+    private void Awake()
+    {
         //Movement
         rb = GetComponent<Rigidbody>();
 
-        //Adds all nodes to a readable list
-        for (int i = 0; i < path.transform.childCount; i++)
-        {
-            pathNodes.Add(path.transform.GetChild(i).gameObject);
-        }
-
         //Picks randomly whether ant starts left or right
-        #region Move Left/Right
-        int startMove = Random.Range(0, 1);
-        if (startMove == 1)
+        #region Set Move Left/Right
+
+        int startMove = Random.Range(0, 2);
+        if (startMove != 0)
         {
             moveLeft = true;
         }
@@ -41,7 +39,17 @@ public class AntBehavior : MonoBehaviour {
         {
             moveLeft = false;
         }
+
         #endregion
+    }
+
+    void Start ()
+    {
+        //Adds all nodes to a readable list
+        for (int i = 0; i < path.transform.childCount; i++)
+        {
+            pathNodes.Add(path.transform.GetChild(i).gameObject);
+        }
 
         //Sets the target node to the spawned node
         newTargetNode();
@@ -51,13 +59,34 @@ public class AntBehavior : MonoBehaviour {
 	void FixedUpdate () {
         //Movement
         MovementPath();
-
-
     }
 
     private void MovementPath()
     {
+        //Assigns RigidBody
         transform.LookAt(targetNode.transform);
+        
+        //Caps Velocity
+        if (rb.velocity.magnitude > maxSpeed)
+        {
+            rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxSpeed);
+        }
+        else
+        {
+            //Applies Acceleration
+            rb.AddForce(transform.forward * acceleration);
+        }
+
+        //Moves to next node
+        if (Vector3.Distance(transform.position, targetNode.transform.position) <= 0.15f)
+        {
+            //Corrupts that node
+            targetNode.GetComponent<Completed>().corrupted = true;
+
+            //Moves target node
+            newTargetNode();          
+        }
+        
     }
 
     private void newTargetNode()
@@ -69,8 +98,11 @@ public class AntBehavior : MonoBehaviour {
             //Increases int
             currentNode = currentNode + 1;
             //Changes path if at the end
-            if (currentNode > pathNodes.Count)
+            if (currentNode >= pathNodes.Count)
             {
+                //int Clamp
+                currentNode = currentNode - 1;
+                //Change Path
                 ChangePath();
             }
             //Changes new target to the next one in the path
@@ -91,7 +123,10 @@ public class AntBehavior : MonoBehaviour {
             //Changes path if at the end
             if (currentNode < 0)
             {
-                ChangePath();
+                //int Clamp
+                currentNode = currentNode + 1;
+                //Change Path
+                ChangePath();           
             }
             //Changes new target to the next one in the path
             else
@@ -104,11 +139,95 @@ public class AntBehavior : MonoBehaviour {
     }
     private void ChangePath()
     {
+        //Completes path
+        path.GetComponent<Completed>().corrupted = true;
+
+        //Bugfix sliding
+        rb.velocity = Vector3.zero;
+        //Changes move direction
         moveLeft = !moveLeft;
+        NewPath();
     }
 
-    private void OnTriggerEnter(Collider other)
+    private List<GameObject> unCorruptedNodes = new List<GameObject>();
+    [HideInInspector]
+    public List<GameObject> freePaths = new List<GameObject>();
+
+    private void NewPath()
     {
+        //Emtpies all free paths
+        freePaths.Clear();
+        //Adds all free paths to list
+        foreach (GameObject path in GameObject.FindGameObjectsWithTag("Path"))
+        {
+            //For each path without an ant...
+            if (path.GetComponent<Completed>().ants.Count == 0)
+            {
+                //...add to list of free paths
+                freePaths.Add(path);
+            }
+        }
+        //Random Spawn if no paths are left
+        if (freePaths.Count == 0)
+        {
+            //Grabs all the nodes that are not overrun
+            GameObject[] nodes = GameObject.FindGameObjectsWithTag("TravelNode");
+            //Adds nodes to uncorrupted list
+            foreach (GameObject node in nodes)
+            {
+                if (node.GetComponent<Completed>().corrupted == false)
+                {
+                    unCorruptedNodes.Add(node);
+                }
+            }
+
+            //Place
+            //Picks random path (any)
+            int randomPath = Random.Range(0, unCorruptedNodes.Count - 1);
+            GameObject pathPicked = freePaths[randomPath];
+            AssignPath(pathPicked);
+        }
+        else
+        {
+            //Place
+            //Picks random free path
+            int randomPath = Random.Range(0, freePaths.Count - 1);
+            GameObject pathPicked = freePaths[randomPath];
+            AssignPath(pathPicked);
+        }
+
+    }
+
+    private void AssignPath(GameObject newPath)
+    {
+        ///Assigns Node list
+        //Clears list
+        pathNodes.Clear();
+        //Assigns list
+        for (int i = 0; i < newPath.transform.childCount; i++)
+        {
+            pathNodes.Add(newPath.transform.GetChild(i).gameObject);
+        }
+        //Debug.Log(pathNodes[1].gameObject.transform.parent);
+
+        //Clears Ant from old path
+        path.GetComponent<Completed>().ants.Remove(gameObject);
+        ///Assigns path
+        path = newPath;
+        //Clears Ant from old path
+        path.GetComponent<Completed>().ants.Add(gameObject);
+
+        ///Assigns targetNode
+        //Moving Left
+        if (moveLeft)
+        {
+            targetNode = newPath.transform.GetChild(0).gameObject;
+        }
+        //Moving Right
+        else
+        {
+            targetNode = newPath.transform.GetChild(path.transform.childCount-1).gameObject;
+        }
         
     }
 }

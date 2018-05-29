@@ -22,8 +22,6 @@ public class Drawer : MonoBehaviour {
     private float objWidth = 7.5f;
     private float objHeight = 15f;
 
-    //private float objWidth = 10;
-    //private float objHeight = 10;
 
     private void OnTriggerStay(Collider other)
     {
@@ -71,17 +69,6 @@ public class Drawer : MonoBehaviour {
                 tex.SetPixel(-y, x, color);
             }
         }
-
-        //Draws Circle
-        //for (int x = (int)Mathf.Pow( (Mathf.Pow(widthRadius, 2f)) - (pixelLocation.x + Mathf.Pow(widthRadius, 2f)) , 0.5f);
-        //    x < (int)Mathf.Pow(Mathf.Pow(widthRadius, 2f) + (pixelLocation.x + Mathf.Pow(widthRadius, 2f)), 0.5f); x++)
-        //{
-        //    for (int y = (int)Mathf.Pow((Mathf.Pow(heightRadius, 2f)) - (pixelLocation.y + Mathf.Pow(heightRadius, 2f)), 0.5f);
-        //    y < (int)Mathf.Pow(Mathf.Pow(heightRadius, 2f) + (pixelLocation.y + Mathf.Pow(heightRadius, 2f)), 0.5f); y++)
-        //    {
-        //        tex.SetPixel(x, y, color);
-        //    }
-        //}
 
         tex.Apply();
     }

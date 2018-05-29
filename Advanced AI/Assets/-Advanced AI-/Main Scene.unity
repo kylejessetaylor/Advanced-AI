@@ -319,7 +319,7 @@ GameObject:
   - component: {fileID: 25449583}
   - component: {fileID: 25449584}
   m_Layer: 0
-  m_Name: Path (10)
+  m_Name: Path (11)
   m_TagString: Path
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -669,7 +669,7 @@ GameObject:
   - component: {fileID: 67507666}
   - component: {fileID: 67507667}
   m_Layer: 0
-  m_Name: Path (4)
+  m_Name: Path (5)
   m_TagString: Path
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -692,6 +692,7 @@ Transform:
   - {fileID: 1368530090}
   - {fileID: 1918619005}
   - {fileID: 1851189760}
+  - {fileID: 304953492}
   m_Father: {fileID: 187481546}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1093,7 +1094,7 @@ GameObject:
   - component: {fileID: 170873007}
   - component: {fileID: 170873008}
   m_Layer: 0
-  m_Name: Path (7)
+  m_Name: Path (8)
   m_TagString: Path
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1348,7 +1349,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 187481545}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.8, z: 0}
+  m_LocalPosition: {x: 0, y: 0.225, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 377862597}
@@ -1574,7 +1575,7 @@ GameObject:
   - component: {fileID: 304953494}
   - component: {fileID: 304953493}
   m_Layer: 8
-  m_Name: TravelNode (12)
+  m_Name: TravelNode (8)
   m_TagString: TravelNode
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1590,8 +1591,8 @@ Transform:
   m_LocalPosition: {x: -3.64, y: 0, z: -0.29}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
-  m_Father: {fileID: 774423341}
-  m_RootOrder: 11
+  m_Father: {fileID: 67507666}
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &304953493
 MeshRenderer:
@@ -2410,7 +2411,7 @@ GameObject:
   - component: {fileID: 459153782}
   - component: {fileID: 459153783}
   m_Layer: 0
-  m_Name: Path (6)
+  m_Name: Path (7)
   m_TagString: Path
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3238,6 +3239,10 @@ Prefab:
       propertyPath: m_RootOrder
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 4268913619822812, guid: b0e0523db4ceafc4cb62f0ba027cceb8, type: 2}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: b0e0523db4ceafc4cb62f0ba027cceb8, type: 2}
   m_IsPrefabParent: 0
@@ -3839,7 +3844,7 @@ GameObject:
   - component: {fileID: 774423341}
   - component: {fileID: 774423342}
   m_Layer: 0
-  m_Name: Path (3)
+  m_Name: Path (4)
   m_TagString: Path
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3866,7 +3871,6 @@ Transform:
   - {fileID: 32961105}
   - {fileID: 2122297432}
   - {fileID: 373608854}
-  - {fileID: 304953492}
   m_Father: {fileID: 187481546}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4145,7 +4149,7 @@ GameObject:
   - component: {fileID: 849039997}
   - component: {fileID: 849039998}
   m_Layer: 0
-  m_Name: Path (11)
+  m_Name: Path (3)
   m_TagString: Path
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5471,7 +5475,7 @@ GameObject:
   - component: {fileID: 1054576899}
   - component: {fileID: 1054576900}
   m_Layer: 0
-  m_Name: Path (8)
+  m_Name: Path (9)
   m_TagString: Path
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5944,7 +5948,7 @@ GameObject:
   - component: {fileID: 1120519817}
   - component: {fileID: 1120519818}
   m_Layer: 0
-  m_Name: Path (5)
+  m_Name: Path (6)
   m_TagString: Path
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7413,8 +7417,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   travelNodes: {fileID: 187481545}
   ant: {fileID: 1557314888558472, guid: 62da571b4d73af444be74a7ef90ab456, type: 2}
-  spawnRate: 4
+  firstSpawnNumber: 3
+  spawnRate: 50
   startNumber: 5
+  freePaths: []
 --- !u!4 &1357953472
 Transform:
   m_ObjectHideFlags: 0
@@ -10039,7 +10045,7 @@ GameObject:
   - component: {fileID: 1871261400}
   - component: {fileID: 1871261401}
   m_Layer: 0
-  m_Name: Path (9)
+  m_Name: Path (10)
   m_TagString: Path
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
