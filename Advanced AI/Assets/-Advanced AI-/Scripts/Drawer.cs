@@ -5,35 +5,81 @@ using ShaderForge;
 
 public class Drawer : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-        
-    }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    public GameObject gameManager;
 
     #region DrawingCollision
 
+    //Paintable
     public Color paintColor;
+    public bool sprayBottle;
+    private bool paintAble;
+    private List<GameObject> collidedNodes = new List<GameObject>();
 
+    //Texture data
     private float objWidth = 7.5f;
     private float objHeight = 15f;
 
+    private void Awake()
+    {
+        gameManager = GameObject.FindGameObjectWithTag("GameController");
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "TravelNode" && sprayBottle)
+        {
+            collidedNodes.Add(other.gameObject);
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "TravelNode" && sprayBottle)
+        {
+            collidedNodes.Remove(other.gameObject);
+        }
+    }
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.tag == "Terrain")
+        //If spray bottle 
+        if (sprayBottle && collidedNodes.Count > 0)
         {
-            GameObject terrain = other.gameObject;
+            for (int i = 0; i < collidedNodes.Count; i++)
+            {
+                if (collidedNodes[i].gameObject.GetComponent<Completed>().ants.Count > 0)
+                {
+                    paintAble = false;
+                    break;
+                }
+                else
+                {
+                    paintAble = true;
+                }
+            }
+        }
+        else
+        {
+            paintAble = true;
+        }
 
-            //IDs the texture
-            Renderer rend = terrain.GetComponent<Renderer>();
-            //Texture2D texture = rend.material.mainTexture as Texture2D;
-            Texture2D texture = Instantiate(rend.material.GetTexture("_DrawMap")) as Texture2D;
-            rend.material.SetTexture("_DrawMap", texture);
+        //Clears corruption bool from travelNode
+        if (other.tag == "TravelNode" && paintAble == true)
+        {
+            //Cleanses Node
+            other.GetComponent<Completed>().corrupted = false;
+        }
+        //Bug's painting
+        if (sprayBottle == false)
+        {
+            paintAble = true;
+        }
+
+        if (other.tag == "Terrain" && paintAble == true)
+        {
+            //Grabs texture from Game Manager
+            GameObject terrain = gameManager.GetComponent<Spawner>().leaf;
+            Texture2D texture = gameManager.GetComponent<Spawner>().paintTexture;
+                    
 
             //Gets location of the pixel on terrain at this object's pivot &&& Paints a color around the location
             PaintAround(texture, PixelLocation(terrain, texture, objWidth, objHeight),

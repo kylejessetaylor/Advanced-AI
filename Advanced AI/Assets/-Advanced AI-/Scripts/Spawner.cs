@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour {
 
+    public GameObject leaf;
+    [HideInInspector]
+    public Texture2D paintTexture;
+
     public GameObject travelNodes;
 
     //Ant Spawning
@@ -21,6 +25,8 @@ public class Spawner : MonoBehaviour {
             SpawnAnt();
         }
 
+        //Instantiates 1 copy of Texture2D and has Drawer reference it
+        TextureSplat();
 	}
 	
 	// Update is called once per frame
@@ -37,6 +43,18 @@ public class Spawner : MonoBehaviour {
             //Resets Timer
             timer = Time.timeSinceLevelLoad;
         }
+    }
+
+    private void TextureSplat()
+    {
+        ///Texture 'Getting'
+        GameObject terrain = leaf;
+
+        //IDs the texture
+        Renderer rend = terrain.GetComponent<Renderer>();
+        //Texture2D texture = rend.material.mainTexture as Texture2D;
+        paintTexture = Instantiate(rend.material.GetTexture("_DrawMap")) as Texture2D;
+        rend.material.SetTexture("_DrawMap", paintTexture);
     }
 
     #region Spawning
@@ -118,6 +136,7 @@ public class Spawner : MonoBehaviour {
 
         //Assigns targetNode to the Ant
         spawnAnt.GetComponent<AntBehavior>().targetNode = spawnLocation;
+        spawnLocation.GetComponent<Completed>().ants.Add(spawnAnt);
         //Assigns path to the Ant
         spawnAnt.GetComponent<AntBehavior>().path = spawnLocation.transform.parent.gameObject;
         //Assigns the current node the ant is on

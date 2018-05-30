@@ -63,9 +63,9 @@ public class AntBehavior : MonoBehaviour {
 
     private void MovementPath()
     {
-        //Assigns RigidBody
+        //Faces TargetNode
         transform.LookAt(targetNode.transform);
-        
+
         //Caps Velocity
         if (rb.velocity.magnitude > maxSpeed)
         {
@@ -84,10 +84,12 @@ public class AntBehavior : MonoBehaviour {
             targetNode.GetComponent<Completed>().corrupted = true;
 
             //Moves target node
-            newTargetNode();          
+            newTargetNode();
         }
-        
+
     }
+
+    #region ChangingPapths
 
     private void newTargetNode()
     {
@@ -108,6 +110,9 @@ public class AntBehavior : MonoBehaviour {
             //Changes new target to the next one in the path
             else
             {
+                //Adds Ant to old target node
+                targetNode.GetComponent<Completed>().ants.Add(this.gameObject);
+                //Assigns new target node
                 targetNode = pathNodes[currentNode];
             }
         }
@@ -132,6 +137,7 @@ public class AntBehavior : MonoBehaviour {
             else
             {
                 targetNode = pathNodes[currentNode];
+                
             }
         }
 
@@ -229,5 +235,53 @@ public class AntBehavior : MonoBehaviour {
             targetNode = newPath.transform.GetChild(path.transform.childCount-1).gameObject;
         }
         
+    }
+
+    #endregion
+
+    private void Death()
+    {
+        //Remove this any from all paths & Nodes
+        GameObject[] myNodes = GameObject.FindGameObjectsWithTag("TravelNode");
+        GameObject[] myPaths = GameObject.FindGameObjectsWithTag("Path");
+
+        //Removes this any from Node Lists
+        foreach (GameObject node in myNodes)
+        {
+            List<GameObject> antList = node.GetComponent<Completed>().ants;
+            if (antList.Contains(this.gameObject))
+            {
+                antList.Remove(node);
+            }
+        }
+        //Removes this any from Path Lists
+        foreach (GameObject paths in myPaths)
+        {
+            List<GameObject> antList = paths.GetComponent<Completed>().ants;
+            if (antList.Contains(this.gameObject))
+            {
+                antList.Remove(paths);
+            }
+        }
+
+        //Deletes this object
+        Destroy(gameObject);
+
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "TravelNode" && pathNodes.Contains(other.gameObject))
+        {
+            other.GetComponent<Completed>().ants.Add(this.gameObject);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Terrain")
+        {
+            Death();
+        }
     }
 }
