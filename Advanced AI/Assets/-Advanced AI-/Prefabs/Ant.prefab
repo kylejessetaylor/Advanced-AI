@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 54882054696143992}
   m_Layer: 9
   m_Name: Ant
-  m_TagString: Untagged
+  m_TagString: Ant
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -200,6 +200,7 @@ MonoBehaviour:
   targetNode: {fileID: 0}
   currentNode: 0
   moveLeft: 0
+  isSplashed: 0
   acceleration: 10
   maxSpeed: 0.2
   freePaths: []
@@ -217,6 +218,7 @@ MonoBehaviour:
   gameManager: {fileID: 0}
   paintColor: {r: 1, g: 0, b: 0, a: 1}
   sprayBottle: 0
+  paintAble: 0
 --- !u!212 &212526691355079986
 SpriteRenderer:
   m_ObjectHideFlags: 1

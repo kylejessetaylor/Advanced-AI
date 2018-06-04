@@ -1,8 +1,8 @@
 ﻿<Properties StartupItem="Advanced AI.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\-Advanced AI-\Shaders\TextureSplat.shader">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\-Advanced AI-\Materials\WaterShader.shader">
     <Files>
-      <File FileName="Assets\-Advanced AI-\Shaders\TextureSplat.shader" Line="146" Column="32" />
+      <File FileName="Assets\-Advanced AI-\Materials\WaterShader.shader" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

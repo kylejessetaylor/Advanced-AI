@@ -12,7 +12,8 @@ public class Drawer : MonoBehaviour {
     //Paintable
     public Color paintColor;
     public bool sprayBottle;
-    private bool paintAble;
+    //[HideInInspector]
+    public bool paintAble = true;
     private List<GameObject> collidedNodes = new List<GameObject>();
 
     //Texture data
@@ -22,6 +23,8 @@ public class Drawer : MonoBehaviour {
     private void Awake()
     {
         gameManager = GameObject.FindGameObjectWithTag("GameController");
+
+        paintAble = true;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -40,51 +43,45 @@ public class Drawer : MonoBehaviour {
     }
 
     private void OnTriggerStay(Collider other)
-    {
-        //If spray bottle 
-        if (sprayBottle && collidedNodes.Count > 0)
+    {      
+        //Clears corruption bool from travelNode
+        if (other.tag == "TravelNode" && sprayBottle)
         {
-            for (int i = 0; i < collidedNodes.Count; i++)
+            if (transform.GetChild(0).gameObject.activeSelf)
             {
-                if (collidedNodes[i].gameObject.GetComponent<Completed>().ants.Count > 0)
-                {
-                    paintAble = false;
-                    break;
-                }
-                else
-                {
-                    paintAble = true;
-                }
+                //Cleanses Node
+                other.GetComponent<Completed>().corrupted = false;
+                other.GetComponent<Completed>().ants.Clear();
             }
         }
-        else
-        {
-            paintAble = true;
-        }
 
-        //Clears corruption bool from travelNode
-        if (other.tag == "TravelNode" && paintAble == true)
+        if (other.tag == "Terrain")
         {
-            //Cleanses Node
-            other.GetComponent<Completed>().corrupted = false;
-        }
-        //Bug's painting
-        if (sprayBottle == false)
-        {
-            paintAble = true;
-        }
+            //For Ants
+            if (sprayBottle == false && paintAble)
+            {
+                //Grabs texture from Game Manager
+                GameObject terrain = gameManager.GetComponent<Spawner>().leaf;
+                Texture2D texture = gameManager.GetComponent<Spawner>().paintTexture;
 
-        if (other.tag == "Terrain" && paintAble == true)
-        {
-            //Grabs texture from Game Manager
-            GameObject terrain = gameManager.GetComponent<Spawner>().leaf;
-            Texture2D texture = gameManager.GetComponent<Spawner>().paintTexture;
-                    
 
-            //Gets location of the pixel on terrain at this object's pivot &&& Paints a color around the location
-            PaintAround(texture, PixelLocation(terrain, texture, objWidth, objHeight),
-                paintColor, new Vector2(transform.localScale.x, transform.localScale.z));
+                //Gets location of the pixel on terrain at this object's pivot &&& Paints a color around the location
+                PaintAround(texture, PixelLocation(terrain, texture, objWidth, objHeight),
+                    paintColor, new Vector2(transform.localScale.x, transform.localScale.z));
+            }
 
+            //For Bottle
+            else if (sprayBottle && transform.GetChild(0).gameObject.activeSelf)
+            {
+                //Grabs texture from Game Manager
+                GameObject terrain = gameManager.GetComponent<Spawner>().leaf;
+                Texture2D texture = gameManager.GetComponent<Spawner>().paintTexture;
+
+
+                //Gets location of the pixel on terrain at this object's pivot & Paints a color around the location
+                PaintAround(texture, PixelLocation(terrain, texture, objWidth, objHeight),
+                    paintColor, new Vector2(transform.localScale.x, transform.localScale.z));
+            }
         }
     }
 

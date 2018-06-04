@@ -11,12 +11,13 @@ public class AntBehavior : MonoBehaviour {
     public GameObject targetNode;
     //[HideInInspector]
     public int currentNode;
-
     private GameObject oldPath;
-
     private List<GameObject> pathNodes = new List<GameObject>();
-
     public bool moveLeft;
+
+    [Header("Splashed")]
+    public bool isSplashed = false;
+
     [Header("Movement")]
     private Rigidbody rb;
     public float acceleration;
@@ -58,7 +59,20 @@ public class AntBehavior : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () {
         //Movement
-        MovementPath();
+        MovementPath();        
+        //Debug: Keeps ants above leaf
+        transform.position = new Vector3(transform.position.x, 0.225f, transform.position.z);
+    }
+    private void Update()
+    {
+        //Getting hit by water
+        HitByWater();
+
+        if (transform.GetChild(0).GetComponent<Drawer>().paintAble == false &&
+            GameObject.FindGameObjectWithTag("Spray").transform.GetChild(0).gameObject.activeSelf == false)
+        {
+            CanDraw();
+        }
     }
 
     private void MovementPath()
@@ -86,6 +100,43 @@ public class AntBehavior : MonoBehaviour {
             //Moves target node
             newTargetNode();
         }
+
+    }
+
+    //Splashed by Hose
+    private void HitByWater()
+    {
+        //Is being hit by hose
+        if (isSplashed)
+        {
+            //Stops ability to draw
+            transform.GetChild(0).GetComponent<Drawer>().paintAble = false;
+
+            //Alert Animation
+
+            //Run Away from hose
+
+        }
+    }
+
+    //Allows ants far away to draw again
+    public void CanDrawChecker(GameObject spray, float explosionRadius)
+    {
+        if (Vector3.Distance(transform.position, spray.transform.position) >= explosionRadius*1.45f)
+        {
+            CanDraw();
+        }
+    }
+
+    public void CanDraw()
+    {
+        //Stops ability to draw
+        isSplashed = false;
+        transform.GetChild(0).GetComponent<Drawer>().paintAble = true;
+
+        //Alert Animation
+
+        //Run Away from hose
 
     }
 

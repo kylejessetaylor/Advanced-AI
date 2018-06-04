@@ -9,6 +9,7 @@ public class Completed : MonoBehaviour {
 
     private void FixedUpdate()
     {
+        //Deletes empty List
         for(int i = 0; i <= ants.Count - 1; i++)
         {
             if (ants[i] == null)
@@ -16,6 +17,27 @@ public class Completed : MonoBehaviour {
                 ants.Remove(ants[i]);
             }
         }
+        //Removes corrupt list if node isnt corrupted
+        if (corrupted)
+        {
+            //For every node in a path
+            for(int i = 0; i < transform.childCount - 1; i++)
+            {
+                //If a node is not corrupted
+                if (transform.GetChild(i).GetComponent<Completed>().corrupted == false)
+                {
+                    //Set the path to uncorrupted
+                    GetComponent<Completed>().corrupted = false;
+                    //Stop checking
+                    break;
+                }
+                //If all nodes are corrupted
+                else
+                {
+                    //Set path to corrupt
+                    GetComponent<Completed>().corrupted = true;
+                }
+            }
+        }
     }
-
 }

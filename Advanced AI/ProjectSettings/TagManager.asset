@@ -8,6 +8,8 @@ TagManager:
   - Path
   - TravelNode
   - Spray
+  - Fire
+  - Ant
   layers:
   - Default
   - TransparentFX
