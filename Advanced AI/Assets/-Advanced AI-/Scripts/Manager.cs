@@ -6,15 +6,26 @@ public class Manager : MonoBehaviour {
 
     private GameObject[] paths;
 
-	// Use this for initialization
-	void Start () {
+    [Header("Win Condition")]
+    public float gameDuration = 60f;
+
+    private void Awake()
+    {
+        //Freezes timescale
+    }
+
+    void Start () {
         //Cursor.visible = false;
         paths = GameObject.FindGameObjectsWithTag("Path");
     }
 	
 	// Update is called once per frame
 	void Update () {
-		
+        //Check for Loss
+        CorruptedNodes();
+
+        //Win Game after X seconds
+        WinCondition();
 	}
 
     private void CorruptedNodes()
@@ -35,6 +46,32 @@ public class Manager : MonoBehaviour {
 
     private void LoseCondition()
     {
+        Debug.Log("You Lose");
 
+        //Freezes Game
+        Time.timeScale = 0;
+
+        //Turns on leaf texture splat object
+        //Changes color of painter to Red(Corrupt Leaf)
+
+        //Turns on "Your leaf has been taken from you!" text
+
+    }
+
+    private void WinCondition()
+    {
+        if (Time.timeSinceLevelLoad >= gameDuration)
+        {
+            Debug.Log("You Win");
+
+            //Freezes Game
+            Time.timeScale = 0;
+
+            //Turns on leaf texture splat object
+            //Changes color of painter to Black(Green Leaf)
+
+            //Turns on "Your leaf stays with you!" text
+
+        }
     }
 }

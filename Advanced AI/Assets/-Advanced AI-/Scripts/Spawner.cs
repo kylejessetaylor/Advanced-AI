@@ -17,6 +17,7 @@ public class Spawner : MonoBehaviour {
     public float spawnRate;
     private float timer;
     public int startNumber;
+    public int antCap;
 
 	// Use this for initialization
 	void Start () {
@@ -36,12 +37,19 @@ public class Spawner : MonoBehaviour {
 
     private void SpawnTiming()
     {
-        if (Time.timeSinceLevelLoad - timer >= spawnRate)
+        //Gets ant count
+        GameObject[] ants = GameObject.FindGameObjectsWithTag("Ant");
+        //If too many ants
+        if (ants.Length < antCap)
         {
-            //Spawns Ant
-            SpawnAnt();
-            //Resets Timer
-            timer = Time.timeSinceLevelLoad;
+            //Reduces spawnrate based on number of ants
+            if (Time.timeSinceLevelLoad - timer >= spawnRate)
+            {
+                //Spawns Ant
+                SpawnAnt();
+                //Resets Timer
+                timer = Time.timeSinceLevelLoad;
+            }
         }
     }
 

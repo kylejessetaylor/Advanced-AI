@@ -22,6 +22,22 @@ public class SprayBottle : MonoBehaviour {
     [Tooltip("AoE radius of the Spray Bottle")]
     public float explosionRadius;
 
+    [Header("Water Level")]
+    public GameObject waterMove;
+    [Tooltip("Maximum water(stamina) from spraybottle")]
+    public float waterCap;
+    private float currentWater;
+    [Tooltip("Rate at which water is drained when LMB is down")]
+    public float waterDrainRate;
+    [Tooltip("Rate at which water regenerates")]
+    public float waterRegenRate;
+    private bool waterForceStopped;
+    [Tooltip("Minimum water needed (in decimal %) to shoot after it was forcefully ended from hitting 0")]
+    public float forceStoppedLimit;
+
+    private float emptyHeight = -133f;
+    private float fullHeight = -11.05f;
+
     private GameObject sprayEffect;
 
 
@@ -36,6 +52,9 @@ public class SprayBottle : MonoBehaviour {
         //SprayEffect
         sprayEffect = transform.GetChild(0).gameObject;
         sprayEffect.SetActive(false);
+
+        //WaterRegen
+        currentWater = waterCap;
 	}
 	
 	// Update is called once per frame
@@ -48,6 +67,29 @@ public class SprayBottle : MonoBehaviour {
 
         //Keeps nodes from auto corrupting
         gameObject.GetComponent<Drawer>().enabled = drawer;
+
+        //Water Regen
+        if (!Input.GetMouseButton(0))
+        {
+            //If water is not full
+            if (currentWater < waterCap)
+            {
+                //Regen
+                currentWater += waterRegenRate * Time.deltaTime;
+
+            }
+            //Water is full
+            else
+            {
+                currentWater = waterCap;
+
+                //Water Full Pos height set
+                waterMove.transform.localPosition = new Vector3(0f, fullHeight, 0f);
+            }
+        }
+
+        //WaterLerpVisual
+        WaterVisual();
 
     }
 
@@ -65,7 +107,12 @@ public class SprayBottle : MonoBehaviour {
 
     private void Shoot()
     {
-        if (Input.GetMouseButton(0))
+        //Water has forcefully been stopped & has enough new water
+        if (waterForceStopped && currentWater >= forceStoppedLimit/waterCap)
+        {
+            waterForceStopped = false;
+        }
+        if (Input.GetMouseButton(0) && !waterForceStopped)
         {
             //Turns on Drawer
             drawer = true;
@@ -100,6 +147,9 @@ public class SprayBottle : MonoBehaviour {
                 rbTarget.gameObject.GetComponent<AntBehavior>().isSplashed = true;
                 rbTarget.gameObject.GetComponent<AntBehavior>().CanDrawChecker(gameObject, explosionRadius);
             }
+
+            //Consume Water
+            DrainWater();
         }
         if (Input.GetMouseButtonUp(0))
         {
@@ -125,5 +175,51 @@ public class SprayBottle : MonoBehaviour {
             ant.GetComponent<AntBehavior>().CanDraw();
 
         }
+    }
+
+    private void DrainWater()
+    {
+        //Checks if no water is left
+        if (currentWater <= 0)
+        {
+            //Bugfix
+            currentWater = 0;
+            //Stops water
+            StopWater();
+            waterForceStopped = true;
+
+            //Water Full Pos height set
+            waterMove.transform.localPosition = new Vector3(0f, emptyHeight, 0f);
+
+        }
+        //Drains Water
+        else
+        {
+            //Reduces current water level
+            currentWater -= waterDrainRate*Time.deltaTime;
+        }
+    }
+
+    private void WaterVisual()
+    {
+        //Water height change
+        float multiY = (fullHeight - emptyHeight) / waterCap;
+        float currentY = multiY * currentWater + emptyHeight;
+        Debug.Log(currentY);
+        float yPos = Mathf.Lerp(waterMove.transform.localPosition.y, currentY, 6 * Time.deltaTime);
+        
+        /////Checks height Caps
+        ////Top Height Cap
+        //if (yPos >= fullHeight)
+        //{
+        //    yPos = fullHeight;
+        //}
+        ////Bot Height Cap
+        //else if (yPos <= emptyHeight)
+        //{
+        //    yPos = emptyHeight;
+        //}
+        //Apply height
+        waterMove.transform.localPosition = new Vector3(0f, yPos, 0f);
     }
 }
