@@ -29,8 +29,10 @@ public class SprayBottle : MonoBehaviour {
     private float currentWater;
     [Tooltip("Rate at which water is drained when LMB is down")]
     public float waterDrainRate;
-    [Tooltip("Rate at which water regenerates")]
+    [Tooltip("Rate at which water passively regenerates")]
     public float waterRegenRate;
+    [Tooltip("Rate at which water Actively regenerates")]
+    public float waterRegenActive;
     private bool waterForceStopped;
     [Tooltip("Minimum water needed (in decimal %) to shoot after it was forcefully ended from hitting 0")]
     public float forceStoppedLimit;
@@ -68,26 +70,8 @@ public class SprayBottle : MonoBehaviour {
         //Keeps nodes from auto corrupting
         gameObject.GetComponent<Drawer>().enabled = drawer;
 
-        //Water Regen
-        if (!Input.GetMouseButton(0))
-        {
-            //If water is not full
-            if (currentWater < waterCap)
-            {
-                //Regen
-                currentWater += waterRegenRate * Time.deltaTime;
-
-            }
-            //Water is full
-            else
-            {
-                currentWater = waterCap;
-
-                //Water Full Pos height set
-                waterMove.transform.localPosition = new Vector3(0f, fullHeight, 0f);
-            }
-        }
-
+        //WaterRegen
+        WaterRegen();
         //WaterLerpVisual
         WaterVisual();
 
@@ -112,7 +96,7 @@ public class SprayBottle : MonoBehaviour {
         {
             waterForceStopped = false;
         }
-        if (Input.GetMouseButton(0) && !waterForceStopped)
+        if (Input.GetMouseButton(0) && !waterForceStopped && Time.timeScale != 0)
         {
             //Turns on Drawer
             drawer = true;
@@ -200,26 +184,43 @@ public class SprayBottle : MonoBehaviour {
         }
     }
 
+    private void WaterRegen()
+    {
+        //Passive Water Regen
+        if (!Input.GetMouseButton(0))
+        {
+            //If water is not full
+            if (currentWater < waterCap)
+            {
+                //Regen
+                currentWater += waterRegenRate * Time.deltaTime;
+
+            }
+            //Water is full
+            else
+            {
+                currentWater = waterCap;
+
+                //Water Full Pos height set
+                waterMove.transform.localPosition = new Vector3(0f, fullHeight, 0f);
+            }
+        }
+
+        //Active Water Regen
+        if (Input.GetMouseButtonDown(1))
+        {
+            currentWater += waterRegenActive;
+        }
+    }
+
     private void WaterVisual()
     {
-        //Water height change
+        //Water height change Maths
         float multiY = (fullHeight - emptyHeight) / waterCap;
         float currentY = multiY * currentWater + emptyHeight;
-        Debug.Log(currentY);
         float yPos = Mathf.Lerp(waterMove.transform.localPosition.y, currentY, 6 * Time.deltaTime);
-        
-        /////Checks height Caps
-        ////Top Height Cap
-        //if (yPos >= fullHeight)
-        //{
-        //    yPos = fullHeight;
-        //}
-        ////Bot Height Cap
-        //else if (yPos <= emptyHeight)
-        //{
-        //    yPos = emptyHeight;
-        //}
-        //Apply height
+
+        //Change Height
         waterMove.transform.localPosition = new Vector3(0f, yPos, 0f);
     }
 }

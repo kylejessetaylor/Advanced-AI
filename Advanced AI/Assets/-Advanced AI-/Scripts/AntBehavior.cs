@@ -23,7 +23,7 @@ public class AntBehavior : MonoBehaviour {
     public float acceleration;
     public float maxSpeed;
 
-    private void Awake()
+    void Awake()
     {
         //Movement
         rb = GetComponent<Rigidbody>();

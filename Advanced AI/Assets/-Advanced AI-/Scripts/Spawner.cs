@@ -13,10 +13,9 @@ public class Spawner : MonoBehaviour {
     //Ant Spawning
     [Header("Ants")]
     public GameObject ant;
-    public float firstSpawnNumber;
+    public int firstSpawnNumber;
     public float spawnRate;
     private float timer;
-    public int startNumber;
     public int antCap;
 
 	// Use this for initialization
