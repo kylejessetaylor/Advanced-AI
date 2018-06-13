@@ -36,6 +36,9 @@ public class SprayBottle : MonoBehaviour {
     private bool waterForceStopped;
     [Tooltip("Minimum water needed (in decimal %) to shoot after it was forcefully ended from hitting 0")]
     public float forceStoppedLimit;
+    [Tooltip("Turns on RMB click icon when water is low")]
+    public float lowWater;
+    public GameObject lowWaterIcon;
 
     private float emptyHeight = -133f;
     private float fullHeight = -11.05f;
@@ -222,5 +225,34 @@ public class SprayBottle : MonoBehaviour {
 
         //Change Height
         waterMove.transform.localPosition = new Vector3(0f, yPos, 0f);
+
+        ///RMB visual
+        ///When LMB Down      
+        if (Input.GetMouseButton(0))
+        {
+            RMBVFX(lowWater);
+        }
+        ///When LMB Up
+        else
+        {
+            RMBVFX(lowWater * 3.25f);
+        }
+    }
+
+    private void RMBVFX(float threshold)
+    {
+        //If water is above a certain amount
+        if (currentWater / waterCap > threshold || Time.timeScale != 1)
+        {
+            //Turns off Image
+            lowWaterIcon.SetActive(false);
+
+        }
+        //If water is below a certain amount
+        else
+        {
+            //Turns on Image
+            lowWaterIcon.SetActive(true);
+        }
     }
 }

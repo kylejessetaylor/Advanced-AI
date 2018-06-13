@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Manager : MonoBehaviour {
 
@@ -98,10 +99,7 @@ public class Manager : MonoBehaviour {
 
     private void LoseCondition()
     {
-        Debug.Log("You Lose");
-
-        //Freezes Game
-        Time.timeScale = 0;
+        Debug.Log("You Lost at: " + Time.timeSinceLevelLoad);
 
         //Turns on leaf texture splat object
         endGameObject.SetActive(true);
@@ -109,7 +107,11 @@ public class Manager : MonoBehaviour {
         GameObject finalLeaf = endGameObject.transform.Find("EndGameDrawer").gameObject;
         finalLeaf.GetComponent<Drawer>().paintColor = Color.red;
         //Turns on "Your leaf has been taken from you!" text
+        endGameUI.transform.Find("Title").GetComponent<Text>().text =
+            "Your Leaf has been taken from you!";
 
+        //Freezes Game
+        Time.timeScale = 0;
     }
 
     private void WinCondition()
@@ -125,6 +127,9 @@ public class Manager : MonoBehaviour {
             finalLeaf.GetComponent<Drawer>().paintColor = Color.black;
             //Turns on "Your leaf stays with you!" text
             endGameUI.SetActive(true);
+            //Sets text to "You Win!"
+            endGameUI.transform.Find("Title").GetComponent<Text>().text =
+                "You Win!";
 
             //Freezes Game
             Time.timeScale = 0;

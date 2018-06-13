@@ -23,6 +23,8 @@ public class AntBehavior : MonoBehaviour {
     public float acceleration;
     public float maxSpeed;
 
+    private SpriteRenderer pinchMark;
+
     void Awake()
     {
         //Movement
@@ -46,6 +48,9 @@ public class AntBehavior : MonoBehaviour {
 
     void Start ()
     {
+        //References pinchMark on ants
+        pinchMark = transform.Find("PinchMark").GetComponent<SpriteRenderer>();
+
         //Adds all nodes to a readable list
         for (int i = 0; i < path.transform.childCount; i++)
         {
