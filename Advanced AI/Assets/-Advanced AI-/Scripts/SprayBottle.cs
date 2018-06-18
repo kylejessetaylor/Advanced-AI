@@ -133,6 +133,8 @@ public class SprayBottle : MonoBehaviour {
                 //Stops ants painting
                 rbTarget.gameObject.GetComponent<AntBehavior>().isSplashed = true;
                 rbTarget.gameObject.GetComponent<AntBehavior>().CanDrawChecker(gameObject, explosionRadius);
+                //Assigns spray for ant to run from
+                rbTarget.gameObject.GetComponent<AntBehavior>().spray = gameObject;
             }
 
             //Consume Water

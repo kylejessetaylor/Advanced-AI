@@ -17,13 +17,22 @@ public class AntBehavior : MonoBehaviour {
 
     [Header("Splashed")]
     public bool isSplashed = false;
+    public float sprayDistance = 1.25f;
 
     [Header("Movement")]
     private Rigidbody rb;
     public float acceleration;
     public float maxSpeed;
 
-    private SpriteRenderer pinchMark;
+    [HideInInspector]
+    public GameObject spray;
+    private bool waterRun;
+    private bool runFromEdge;
+
+    [Header("Exclamation Point")]
+    public GameObject exclamation;
+    public GameObject pinch;
+    public Quaternion exRot;
 
     void Awake()
     {
@@ -48,9 +57,6 @@ public class AntBehavior : MonoBehaviour {
 
     void Start ()
     {
-        //References pinchMark on ants
-        pinchMark = transform.Find("PinchMark").GetComponent<SpriteRenderer>();
-
         //Adds all nodes to a readable list
         for (int i = 0; i < path.transform.childCount; i++)
         {
@@ -63,13 +69,37 @@ public class AntBehavior : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-        //Movement
-        MovementPath();        
-        //Debug: Keeps ants above leaf
-        transform.position = new Vector3(transform.position.x, 0.225f, transform.position.z);
+        Movement();      
     }
-    private void Update()
+    void Update()
     {
+        //Transform Position of !
+        if (currentEx != null)
+        {
+            currentEx.transform.position = transform.position;
+        }
+        //Turns off ! when not being splashed
+        if (!isSplashed)
+        {
+            Destroy(currentEx);
+        }
+        //Destroys when falls far enough
+        if (transform.position.y <= -100f)
+        {
+            Destroy(gameObject);
+        }
+
+        ///Pinch Mark
+        //If is being splashed but not running
+        if (isSplashed && currentEx == null)
+        {
+            pinch.SetActive(true);
+        }
+        else
+        {
+            pinch.SetActive(false);
+        }
+
         //Getting hit by water
         HitByWater();
 
@@ -80,10 +110,59 @@ public class AntBehavior : MonoBehaviour {
         }
     }
 
-    private void MovementPath()
+    private void Movement()
+    {
+        //Run away from spray
+        if (isSplashed)
+        {
+            waterRun = true;
+
+            //If not too close to edge
+            if (runFromEdge == false)
+            {
+                //Face away from spray
+                transform.LookAt(2 * transform.position - spray.transform.position);
+                ///Runs away from spray
+                if (rb.velocity.magnitude > maxSpeed)
+                {
+                    //Caps Velocity
+                    rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxSpeed);
+                }
+                else
+                {
+                    //Applies Acceleration
+                    rb.AddForce(transform.forward * acceleration);
+                }
+            }
+
+
+        }
+        //Node movement
+        else
+        {
+            //Normal leaf movement
+            MovementPath(targetNode.transform);
+
+            //Stop running from water
+            waterRun = false;
+        }
+
+        //Debug: Keeps ants above leaf
+        if (GetComponent<Rigidbody>().useGravity == false)
+        {
+            transform.position = new Vector3(transform.position.x, 0.1f, transform.position.z);
+        }
+        //If falling
+        else
+        {
+            GetComponent<Rigidbody>().AddForce(new Vector3(0, -1000, 0), ForceMode.Acceleration);
+        }
+    }
+
+    private void MovementPath(Transform lookAt)
     {
         //Faces TargetNode
-        transform.LookAt(targetNode.transform);
+        transform.LookAt(lookAt);
 
         //Caps Velocity
         if (rb.velocity.magnitude > maxSpeed)
@@ -93,7 +172,7 @@ public class AntBehavior : MonoBehaviour {
         else
         {
             //Applies Acceleration
-            rb.AddForce(transform.forward * acceleration);
+            rb.AddForce(transform.forward * acceleration/2);
         }
 
         //Moves to next node
@@ -119,7 +198,11 @@ public class AntBehavior : MonoBehaviour {
 
             //Alert Animation
 
-            //Run Away from hose
+            //Check to keep running
+            if (Vector3.Distance(transform.position, spray.transform.position) > sprayDistance)
+            {
+                isSplashed = false;
+            }
 
         }
     }
@@ -320,24 +403,89 @@ public class AntBehavior : MonoBehaviour {
             }
         }
 
+        //Turns off !
+        Destroy(currentEx);
+
         //Deletes this object
-        Destroy(gameObject);
+        GetComponent<Rigidbody>().useGravity = true;
 
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        //Node Movement
         if (other.tag == "TravelNode" && pathNodes.Contains(other.gameObject))
         {
             other.GetComponent<Completed>().ants.Add(this.gameObject);
+        } 
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        //Edge of leaf
+        if (other.tag == "Leaf Edge" && waterRun)
+        {
+            //Toggles to run from edge
+            runFromEdge = true;
+
+            ////Turns on alert
+            ExclamationPoint(true);
+
+            #region Run
+
+            //Face the spray
+            transform.LookAt(spray.transform.position);
+            ///Runs to spray
+            if (rb.velocity.magnitude > maxSpeed)
+            {
+                //Caps Velocity
+                rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxSpeed);
+            }
+            else
+            {
+                //Applies Acceleration
+                rb.AddForce(transform.forward * acceleration);
+            }
+
+            #endregion
+        }
+    }
+
+    private GameObject currentEx;
+
+    private void ExclamationPoint(bool on)
+    {
+        //Turns on !
+        if (on)
+        {
+            //If there is no !
+            if (currentEx == null)
+            {
+                currentEx = Instantiate(exclamation);
+            }
+        }
+        //Turns off !
+        else
+        {
+            Destroy(currentEx);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
+        //Fall off leaf
         if (other.tag == "Terrain")
         {
             Death();
+        }
+        //Edge of leaf
+        else if (other.tag == "Leaf Edge" && isSplashed == false)
+        {
+            waterRun = false;
+            runFromEdge = false;
+
+            //Turns off alert
+            ExclamationPoint(false);
         }
     }
 }

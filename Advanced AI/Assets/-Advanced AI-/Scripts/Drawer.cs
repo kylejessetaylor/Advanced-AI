@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using ShaderForge;
 
 public class Drawer : MonoBehaviour {
 
@@ -58,7 +57,8 @@ public class Drawer : MonoBehaviour {
         if (other.tag == "Terrain")
         {
             //For Ants
-            if (sprayBottle == false && paintAble)
+            if (sprayBottle == false && transform.parent.GetComponent<AntBehavior>().
+                isSplashed == false)
             {
                 //Grabs texture from Game Manager
                 GameObject terrain = gameManager.GetComponent<Spawner>().leaf;

@@ -10,6 +10,7 @@ TagManager:
   - Spray
   - Fire
   - Ant
+  - Leaf Edge
   layers:
   - Default
   - TransparentFX
