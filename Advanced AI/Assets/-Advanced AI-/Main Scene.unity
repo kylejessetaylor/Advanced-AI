@@ -15033,12 +15033,12 @@ Prefab:
     - target: {fileID: 114583138770970326, guid: 588d37a46ae27304a9add79aa32f1141,
         type: 2}
       propertyPath: spawnRate
-      value: 3.5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 114583138770970326, guid: 588d37a46ae27304a9add79aa32f1141,
         type: 2}
       propertyPath: firstSpawnNumber
-      value: 9
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 114583138770970326, guid: 588d37a46ae27304a9add79aa32f1141,
         type: 2}
@@ -16494,7 +16494,7 @@ Prefab:
     - target: {fileID: 114880782504427582, guid: acf7efa88e0c806419010c227f17d352,
         type: 2}
       propertyPath: forceStrength
-      value: 27.5
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 114880782504427582, guid: acf7efa88e0c806419010c227f17d352,
         type: 2}

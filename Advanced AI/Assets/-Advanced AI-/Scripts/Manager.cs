@@ -129,7 +129,7 @@ public class Manager : MonoBehaviour {
             endGameUI.SetActive(true);
             //Sets text to "You Win!"
             endGameUI.transform.Find("Title").GetComponent<Text>().text =
-                "You Win!";
+                "The leaf is yours!";
 
             //Freezes Game
             Time.timeScale = 0;

@@ -102,8 +102,9 @@ public class Drawer : MonoBehaviour {
         float widthRadius = ((mySize.x / 2) / objWidth) * tex.width;
         float heightRadius = ((mySize.y / 2) / objHeight) * tex.height;
 
-        //NOTE: change "x < (int)pixelLocation.x + (int)widthRadius" to follow spherical equation (x^2 + y^2 = objWidth/2 ^ 2) for circle texture splat
+        //Vector2[] pixelArray = null;
 
+        //NOTE: change "x < (int)pixelLocation.x + (int)widthRadius" to follow spherical equation (x^2 + y^2 = objWidth/2 ^ 2) for circle texture splat
         ////Sets each individual pixel around the object to be a color
         for (int x = (int)pixelLocation.x - (int)widthRadius; x < (int)pixelLocation.x + (int)widthRadius; x++)
         {
@@ -112,7 +113,6 @@ public class Drawer : MonoBehaviour {
                 tex.SetPixel(-y, x, color);
             }
         }
-
         tex.Apply();
     }
 
